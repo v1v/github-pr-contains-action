@@ -93,6 +93,7 @@ async function run() {
 
       const parsedDiff = await getDiff(octokit, repository, pull_request);
       core.setOutput("numberOfFiles", parsedDiff.length);
+      core.debug("numberOfFiles: " + parsedDiff.length);
       const filesChanged = +core.getInput("filesChanged");
       if (filesChanged && parsedDiff.length != filesChanged) {
         core.setFailed(
@@ -112,6 +113,11 @@ async function run() {
           });
         });
       });
+
+      core.debug("diffContains: " + diffContains);
+      core.debug("diffDoesNotContain: " + diffDoesNotContain);
+      core.debug("changes: " + changes);
+
       if (diffContains && !rexify(diffContains).test(changes)) {
         core.setFailed(
           "The added code does not contain «" + diffContains + "»"
